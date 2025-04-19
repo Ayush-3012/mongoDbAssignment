@@ -7,7 +7,6 @@ export const getAllUsers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   const foundUser = await User.findById(req.params.id); // passing mongoose ObjectId in params
-  console.log(foundUser);
   if (!foundUser) return res.status(404).json({ error: " User Not Found" });
 
   return res.status(200).json(foundUser);
