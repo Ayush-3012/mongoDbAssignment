@@ -1,4 +1,3 @@
-// const users = []; // global user object to stores users details.
 import { User } from "../models/user.model.js";
 
 export const getAllUsers = async (req, res) => {
@@ -35,7 +34,7 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
-  const foundUser = await User.findByIdAndDelete(req.params.id);
+  const foundUser = await User.findByIdAndDelete(req.params.id); // using ObjectId to find the user and delete.
   if (!foundUser) return res.status(404).json({ error: "User not found" });
 
   return res.status(204).send();
