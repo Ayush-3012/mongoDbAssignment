@@ -2,7 +2,7 @@
 import { User } from "../models/user.model.js";
 
 export const getAllUsers = async (req, res) => {
-  const allUsers = await User.find();
+  const allUsers = await User.find(); // using User.find() to get all the users form db.
   return res.status(200).json(allUsers);
 };
 
@@ -16,7 +16,7 @@ export const getUserById = async (req, res) => {
 
 export const createUser = (req, res) => {
   const newUser = req.body;
-  User.create(newUser);
+  User.create(newUser); // using User.create() to save the new users.
   return res.status(201).json({ message: "User created", user: newUser });
 };
 
