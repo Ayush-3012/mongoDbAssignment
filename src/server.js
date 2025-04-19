@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import logger from "./middlewares/logger.js";
 import userRouter from "./routes/user.routes.js";
+import connectDB from "./db/connect.js"; // database connection
 
 dotenv.config();
 
@@ -21,5 +22,5 @@ app.use("/api/v1/users", userRouter);
 
 // listening to defined PORT after starting the server.
 app.listen(PORT, () => {
-  console.log(`Server is listening on port: ${PORT}`);
+  connectDB(), console.log(`Server is listening on port: ${PORT}`);
 });

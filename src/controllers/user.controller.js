@@ -1,11 +1,14 @@
-const users = []; // global user object to stores users details.
+// const users = []; // global user object to stores users details.
+import { User } from "../models/user.model.js";
 
-export const getAllUsers = (req, res) => {
-  return res.status(200).json(users);
+export const getAllUsers = async (req, res) => {
+  const allUsers = await User.find();
+  return res.status(200).json(allUsers);
 };
 
-export const getUserById = (req, res) => {
-  const foundUser = users.find((user) => Number(user.id) === Number(req.params.id));
+export const getUserById = async (req, res) => {
+  const foundUser = await User.findById(req.params.id); // passing mongoose ObjectId in params
+  console.log(foundUser);
   if (!foundUser) return res.status(404).json({ error: " User Not Found" });
 
   return res.status(200).json(foundUser);
@@ -13,31 +16,27 @@ export const getUserById = (req, res) => {
 
 export const createUser = (req, res) => {
   const newUser = req.body;
-  users.push(newUser);
+  User.create(newUser);
   return res.status(201).json({ message: "User created", user: newUser });
 };
 
-export const updateUser = (req, res) => {
-  const foundUserIndex = users.findIndex(
-    (user) => Number(user.id) === Number(req.params.id)
-  );
+export const updateUser = async (req, res) => {
+  const { firstName, lastName, hobby } = req.body;
+  const foundUser = await User.findById(req.params.id); // passing mongoose ObjectId in params
 
-  if (foundUserIndex === -1)
-    return res.status(404).json({ error: "User not found" });
+  if (!foundUser) return res.status(404).json({ error: "User not found" });
 
-  users[foundUserIndex] = { ...users[foundUserIndex], ...req.body };
-  return res
-    .status(200)
-    .json({ message: "User updated", user: users[foundUserIndex] });
+  if (firstName) foundUser.firstName = firstName;
+  if (lastName) foundUser.lastName = lastName;
+  if (hobby) foundUser.hobby = hobby;
+
+  const updatedUser = await foundUser.save();
+  return res.status(200).json({ message: "User updated", updatedUser });
 };
 
-export const deleteUser = (req, res) => {
-  const foundUserIndex = users.findIndex(
-    (user) => Number(user.id) === Number(req.params.id)
-  );
-  if (foundUserIndex === -1)
-    return res.status(404).json({ error: "User not found" });
+export const deleteUser = async (req, res) => {
+  const foundUser = await User.findByIdAndDelete(req.params.id);
+  if (!foundUser) return res.status(404).json({ error: "User not found" });
 
-  users.splice(foundUserIndex, 1);
-  return res.status(204).json({ message: "User deleted" });
+  return res.status(204).send();
 };
