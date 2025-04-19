@@ -21,16 +21,19 @@ export const createUser = (req, res) => {
 
 export const updateUser = async (req, res) => {
   const { firstName, lastName, hobby } = req.body;
-  const foundUser = await User.findById(req.params.id); // passing mongoose ObjectId in params
+  const foundUser = await User.findByIdAndUpdate(
+    req.params.id, // id
+    {
+      firstName,
+      lastName,
+      hobby,
+    }, // updated fields
+    { new: true }
+  ); // passing mongoose ObjectId in params
 
   if (!foundUser) return res.status(404).json({ error: "User not found" });
 
-  if (firstName) foundUser.firstName = firstName;
-  if (lastName) foundUser.lastName = lastName;
-  if (hobby) foundUser.hobby = hobby;
-
-  const updatedUser = await foundUser.save();
-  return res.status(200).json({ message: "User updated", updatedUser });
+  return res.status(200).json({ message: "User updated", foundUser });
 };
 
 export const deleteUser = async (req, res) => {
